@@ -1,77 +1,105 @@
-# Full Stack Open Course Repository
+# Full Stack Open - Course repository
 
-Welcome to the repository for the [Full Stack Open](https://fullstackopen.com/) course! This repository will be used to complete exercises and projects as part of the course curriculum.
+This repository is dedicated to the exercises and projects completed during the [Full Stack Open](https://fullstackopen.com/) course. The course is provided by the University of Helsinki and focuses on modern web development with JavaScript, React, and Node.js.
 
-## About the Course
+## Course Overview
 
-The Full Stack Open course, offered by the University of Helsinki, covers modern web development techniques using JavaScript. The course is free and focuses on building full-stack applications using the following technologies:
+The Full Stack Open course is designed to teach you web development from the ground up, with a focus on hands-on, practical learning. The course covers a wide range of topics, including React, Node.js, Express, and more. Below is an overview of the course structure:
 
-- **React**: A JavaScript library for building user interfaces.
-- **Redux**: A state management library for JavaScript applications.
-- **Node.js**: A JavaScript runtime built on Chrome's V8 JavaScript engine.
-- **Express**: A minimal and flexible Node.js web application framework.
-- **MongoDB**: A NoSQL database for storing application data.
-- **GraphQL**: A query language for APIs.
-- **TypeScript**: A typed superset of JavaScript that compiles to plain JavaScript.
-- **Jest**: A JavaScript testing framework.
+### Part 0: Fundamentals of Web Applications
 
-## What I Will Learn
+- Basics of web development
+- Understanding client-server architecture
+- Introduction to modern web technologies
 
-Throughout the course, you will gain hands-on experience with the following concepts and tools:
+### Part 1: Introduction to React
 
-1. **Introduction to React**
+- Basics of React
+- Component-based architecture
+- Props and state
+- Event handling
+- Forms and controlled components
 
-   - Components, props, and state
-   - Event handling
-   - Component lifecycle
+### Part 2: Communicating with the Server
 
-2. **Communicating with the Server**
+- Fetching data from a server
+- Using Axios for HTTP requests
+- Working with Promises and async/await
+- Effect hooks
 
-   - Fetching data from a server
-   - Axios for HTTP requests
-   - Promises and async/await
+### Part 3: Programming a Server with Node.js and Express
 
-3. **Programming a Server with Node.js and Express**
+- Introduction to Node.js
+- Creating a server with Express
+- Building RESTful APIs
+- Middleware functions
+- Error handling
 
-   - Setting up a Node.js server
-   - RESTful APIs
-   - Middleware
+### Part 4: Testing Express Servers, User Administration
 
-4. **Testing Express Servers, User Administration**
+- Writing unit and integration tests
+- Using Jest for testing
+- Testing Express applications
+- User authentication and authorization
+- JSON Web Tokens (JWT)
 
-   - Unit and integration testing with Jest
-   - User authentication and authorization
-   - Securing applications
+### Part 5: Testing React Applications
 
-5. **React Router, Custom Hooks, State Management with Redux**
+- Testing components with React Testing Library
+- Mocking dependencies
+- End-to-end testing with Cypress
 
-   - Single-page applications with React Router
-   - Custom hooks
-   - Global state management with Redux
+### Part 6: Advanced State Management
 
-6. **Connecting Frontend to Backend**
+- Introduction to Redux
+- Actions and reducers
+- Connecting Redux to React components
+- Middleware and async actions
 
-   - Handling forms in React
-   - Connecting a React app to a Node.js server
-   - Managing data flow between frontend and backend
+### Part 7: React Router, Custom Hooks, Styling with CSS and Webpack
 
-7. **GraphQL**
+- Client-side routing with React Router
+- Creating and using custom hooks
+- Styling components with CSS
+- Configuring Webpack for a React application
 
-   - Introduction to GraphQL
-   - Writing queries and mutations
-   - Setting up a GraphQL server with Apollo
+### Part 8: GraphQL
 
-8. **TypeScript**
+- Introduction to GraphQL
+- Setting up a GraphQL server
+- Queries and mutations
+- Using Apollo Client with React
 
-   - Basic and advanced TypeScript features
-   - TypeScript with React and Node.js
+### Part 9: TypeScript
 
-9. **CI/CD**
+- Introduction to TypeScript
+- Type annotations and inference
+- Using TypeScript with React
 
-   - Continuous Integration and Continuous Deployment
-   - Automated testing and deployment pipelines
+### Part 10: React Native
 
-10. **Containers**
-    - Introduction to Docker
-    - Containerizing applications
-    - Orchestration with Kubernetes
+- Introduction to React Native
+- Building mobile applications
+- Using React Native components and APIs
+
+### Part 11: CI/CD (Available in English)
+
+- Continuous Integration and Deployment concepts
+- Setting up CI/CD pipelines
+- Automating testing and deployment
+
+### Part 12: Containers
+
+- Introduction to Docker and containerization
+- Creating and managing containers
+- Using containers in development and production
+
+### Part 13: Using Relational Databases
+
+- Introduction to relational databases
+- SQL basics and advanced queries
+- Integrating relational databases with Node.js
+
+## Acknowledgments
+
+This repository is based on the Full Stack Open course by the University of Helsinki. Special thanks to the course creators and contributors for providing this valuable resource.
