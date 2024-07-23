@@ -3,13 +3,15 @@ import Filter from "./components/Filter";
 import PersonForm from "./components/PersonForm";
 import Persons from "./components/Persons";
 import personService from "./services/numbers";
-import axios from "axios";
+import Notification from "./components/Notification";
 
 const App = () => {
   const [persons, setPersons] = useState([]);
   const [newName, setNewName] = useState("");
   const [newNumber, setNewNumber] = useState("");
   const [filterInput, setFilterInput] = useState("");
+  const [message, setMessage] = useState("");
+  const [messageType, setMessageType] = useState("success");
 
   useEffect(() => {
     personService
@@ -31,7 +33,6 @@ const App = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
     if (!newName || !newNumber) return alert("Please, complete all the fields");
-    console.log(newName, newNumber);
     const foundedName = persons.find(
       (person) => person.name.toLowerCase() === newName.toLowerCase()
     );
@@ -47,14 +48,29 @@ const App = () => {
         };
         personService
           .updatePerson(foundedName.id, updatedPerson)
-          .then((result) =>
+          .then((result) => {
             setPersons(
               persons.map((person) =>
                 person.id !== foundedName.id ? person : result
               )
-            )
-          )
-          .catch((err) => `Ups! An error ocurred in createPerson(): ${err}`);
+            );
+            setMessageType("success");
+            setMessage(`Updated ${updatedPerson.name}`);
+            setTimeout(() => {
+              setMessage("");
+            }, 5000);
+          })
+          .catch((err) => {
+            setMessageType("error");
+            setMessage(
+              `Information of "${updatedPerson.name}" has already been removed from server`
+            );
+            setPersons(persons.filter((person) => person.name !== newName));
+            setTimeout(() => {
+              setMessage("");
+            }, 5000);
+            console.log(`Ups! An error ocurred in createPerson(): ${err}`);
+          });
         return;
       } else {
         return;
@@ -69,10 +85,20 @@ const App = () => {
         setPersons(persons.concat(response));
         setNewName("");
         setNewNumber("");
+        setMessageType("success");
+        setMessage(`Added ${response.name}`);
+        setTimeout(() => {
+          setMessage("");
+        }, 5000);
       })
-      .catch((err) =>
-        console.log(`Ups! An error ocurred in createPerson(): ${err}`)
-      );
+      .catch((err) => {
+        setMessageType("error");
+        setMessage(`An error ocurred while "${newName}" was created`);
+        setTimeout(() => {
+          setMessage("");
+        }, 5000);
+        console.log(`Ups! An error ocurred in createPerson(): ${err}`);
+      });
   };
 
   const handleFilter = (e) => setFilterInput(e.target.value);
@@ -87,15 +113,31 @@ const App = () => {
     const person = persons.find((person) => person.id === id);
     const resultConfirm = window.confirm(`Delete ${person.name}?`);
     if (resultConfirm) {
-      personService.deletePerson(person.id).then((response) => {
-        setPersons(persons.filter((person) => person.id !== response.id));
-      });
+      personService
+        .deletePerson(person.id)
+        .then((response) => {
+          setMessageType("success");
+          setMessage(`Deleted ${response.name}`);
+          setTimeout(() => {
+            setMessage("");
+          }, 5000);
+          setPersons(persons.filter((person) => person.id !== response.id));
+        })
+        .catch((err) => {
+          setMessageType("error");
+          setMessage(`An error ocurred while "${person.name}" was deleted`);
+          setTimeout(() => {
+            setMessage("");
+          }, 5000);
+          console.log(`Ups! An error ocurred in createPerson(): ${err}`);
+        });
     }
   };
 
   return (
     <div>
       <h2>Phonebook</h2>
+      <Notification message={message} type={messageType} />
       <Filter filterInput={filterInput} handleFilter={handleFilter} />
       <h3>Add a new</h3>
       <PersonForm
