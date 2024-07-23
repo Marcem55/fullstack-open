@@ -1,8 +1,9 @@
 import { useState, useEffect } from "react";
-import axios from "axios";
 import Filter from "./components/Filter";
 import PersonForm from "./components/PersonForm";
 import Persons from "./components/Persons";
+import personService from "./services/numbers";
+import axios from "axios";
 
 const App = () => {
   const [persons, setPersons] = useState([]);
@@ -11,9 +12,12 @@ const App = () => {
   const [filterInput, setFilterInput] = useState("");
 
   useEffect(() => {
-    axios.get("http://localhost:3001/persons").then((response) => {
-      setPersons(response.data);
-    });
+    personService
+      .getAll()
+      .then((initialPersons) => {
+        setPersons(initialPersons);
+      })
+      .catch((err) => console.log(`Ups! An error ocurred in getAll(): ${err}`));
   }, []);
 
   const handleNameInput = (e) => {
@@ -27,11 +31,48 @@ const App = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
     if (!newName || !newNumber) return alert("Please, complete all the fields");
-    const foundedName = persons.find((person) => person.name === newName);
-    if (foundedName) return alert(`${newName} is alerady added to phonebook`);
-    setPersons(persons.concat({ name: newName, number: newNumber }));
-    setNewName("");
-    setNewNumber("");
+    console.log(newName, newNumber);
+    const foundedName = persons.find(
+      (person) => person.name.toLowerCase() === newName.toLowerCase()
+    );
+    if (foundedName) {
+      //  return alert(`${newName} is alerady added to phonebook`)
+      const resultConfirm = window.confirm(
+        `${newName} is already added to phonebook, do you want to replace the old number with a new one?`
+      );
+      if (resultConfirm) {
+        const updatedPerson = {
+          ...foundedName,
+          number: newNumber,
+        };
+        personService
+          .updatePerson(foundedName.id, updatedPerson)
+          .then((result) =>
+            setPersons(
+              persons.map((person) =>
+                person.id !== foundedName.id ? person : result
+              )
+            )
+          )
+          .catch((err) => `Ups! An error ocurred in createPerson(): ${err}`);
+        return;
+      } else {
+        return;
+      }
+    }
+    personService
+      .createPerson({
+        name: newName,
+        number: newNumber,
+      })
+      .then((response) => {
+        setPersons(persons.concat(response));
+        setNewName("");
+        setNewNumber("");
+      })
+      .catch((err) =>
+        console.log(`Ups! An error ocurred in createPerson(): ${err}`)
+      );
   };
 
   const handleFilter = (e) => setFilterInput(e.target.value);
@@ -41,6 +82,16 @@ const App = () => {
         person.name.toLowerCase().includes(filterInput.toLowerCase())
       )
     : persons;
+
+  const handleDelete = (id) => {
+    const person = persons.find((person) => person.id === id);
+    const resultConfirm = window.confirm(`Delete ${person.name}?`);
+    if (resultConfirm) {
+      personService.deletePerson(person.id).then((response) => {
+        setPersons(persons.filter((person) => person.id !== response.id));
+      });
+    }
+  };
 
   return (
     <div>
@@ -55,7 +106,7 @@ const App = () => {
         newNumber={newNumber}
       />
       <h2>Numbers</h2>
-      <Persons persons={filteredPersons} />
+      <Persons persons={filteredPersons} handleDelete={handleDelete} />
     </div>
   );
 };
