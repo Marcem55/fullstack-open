@@ -1,28 +1,16 @@
 import { useState, useEffect } from "react";
 import countrieService from "./services/countries";
 import "./App.css";
-
-const CountryDetail = ({ country }) => {
-  return (
-    <div>
-      <h1>{country.name.common}</h1>
-      <p>Capital: {country.capital.join(" ")}</p>
-      <p>Area: {country.area}</p>
-      <h2>Languages</h2>
-      <ul>
-        {Object.values(country.languages).map((language) => (
-          <li key={language}>{language}</li>
-        ))}
-      </ul>
-      <img src={country.flags.png} alt={country.flags.alt} />
-    </div>
-  );
-};
+import Search from "./components/Search";
+import CountryDetail from "./components/CountryDetail";
+import Countries from "./components/Countries";
 
 function App() {
   const [countries, setCountries] = useState([]);
   const [search, setSearch] = useState("");
   const [showedCountries, setShowedCountries] = useState([]);
+  const [weather, setWeather] = useState(null);
+  const [weatherCountry, setWeatherCountry] = useState(null); // To avoid re-fetching the weather
 
   useEffect(() => {
     countrieService.getAllCountries().then((response) => {
@@ -30,15 +18,41 @@ function App() {
     });
   }, []);
 
-  const handleSearch = (e) => {
-    console.log("e value:", e.target.value);
-    console.log("search:", search);
-    setSearch(e.target.value);
-    setShowedCountries(
-      countries.filter((country) =>
-        country.name.common.toLowerCase().includes(e.target.value.toLowerCase())
-      )
+  useEffect(() => {
+    if (!search) {
+      setShowedCountries([]);
+      setWeather(null);
+      setWeatherCountry(null);
+      return;
+    }
+    const filteredCountries = countries.filter((country) =>
+      country.name.common.toLowerCase().includes(search.toLowerCase())
     );
+    setShowedCountries(filteredCountries);
+
+    if (filteredCountries.length === 1) {
+      const country = filteredCountries[0];
+      if (weatherCountry !== country.name.common) {
+        countrieService
+          .getWeather(country.latlng[0], country.latlng[1])
+          .then((weather) => {
+            setWeather(weather);
+            setWeatherCountry(country.name.common);
+          });
+      }
+    } else {
+      setWeather(null);
+      setWeatherCountry(null);
+    }
+  }, [search, countries, weatherCountry]);
+
+  const handleSearch = (e) => {
+    setSearch(e.target.value);
+  };
+
+  const handleDetail = (name) => {
+    setSearch(name);
+    setWeather(null);
   };
 
   if (!countries.length) {
@@ -46,18 +60,15 @@ function App() {
   }
   return (
     <>
-      Find countries{" "}
-      <input type="text" onChange={handleSearch} value={search} />
+      <Search value={search} onChange={handleSearch} />
       {search && !showedCountries.length ? (
         <p>No founded countries</p>
       ) : showedCountries.length > 10 ? (
         <p>Too many matches, specify another filter</p>
       ) : showedCountries.length === 1 ? (
-        <CountryDetail country={showedCountries[0]} />
+        <CountryDetail country={showedCountries[0]} weather={weather} />
       ) : (
-        showedCountries.map((country) => (
-          <p key={country.name.official}>{country.name.common}</p>
-        ))
+        <Countries countries={showedCountries} handleDetail={handleDetail} />
       )}
     </>
   );
