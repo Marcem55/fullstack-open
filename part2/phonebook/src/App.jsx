@@ -117,11 +117,11 @@ const App = () => {
         .deletePerson(person.id)
         .then((response) => {
           setMessageType("success");
-          setMessage(`Deleted ${response.name}`);
+          setMessage(`Deleted ${person.name}`);
           setTimeout(() => {
             setMessage("");
           }, 5000);
-          setPersons(persons.filter((person) => person.id !== response.id));
+          setPersons(persons.filter((p) => p.id !== person.id));
         })
         .catch((err) => {
           setMessageType("error");
