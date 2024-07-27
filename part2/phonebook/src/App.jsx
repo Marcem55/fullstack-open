@@ -62,10 +62,19 @@ const App = () => {
           })
           .catch((err) => {
             setMessageType("error");
-            setMessage(
-              `Information of "${updatedPerson.name}" has already been removed from server`
-            );
-            setPersons(persons.filter((person) => person.name !== newName));
+            if (
+              err.response.data.error.includes("validation") ||
+              err.response.data.error.includes("Validation")
+            ) {
+              setMessage(
+                `Name must be at least 3 characters long and number must be at least 8 characters long and respect the format: XX-XXXXXXXXX`
+              );
+            } else {
+              setMessage(
+                `Information of "${updatedPerson.name}" has already been removed from server`
+              );
+              setPersons(persons.filter((person) => person.name !== newName));
+            }
             setTimeout(() => {
               setMessage("");
             }, 5000);
@@ -82,6 +91,7 @@ const App = () => {
         number: newNumber,
       })
       .then((response) => {
+        console.log("response", response);
         setPersons(persons.concat(response));
         setNewName("");
         setNewNumber("");
@@ -92,8 +102,18 @@ const App = () => {
         }, 5000);
       })
       .catch((err) => {
+        console.log({ err, errR: err.response.data });
         setMessageType("error");
-        setMessage(`An error ocurred while "${newName}" was created`);
+        if (
+          err.response.data.error.includes("validation") ||
+          err.response.data.error.includes("Validation")
+        ) {
+          setMessage(
+            `Name must be at least 3 characters long and number must be at least 8 characters long and respect the format: XX-XXXXXXXXX`
+          );
+        } else {
+          setMessage(`An error ocurred while "${newName}" was created`);
+        }
         setTimeout(() => {
           setMessage("");
         }, 5000);
