@@ -3,6 +3,7 @@ import Blog from "./components/Blog";
 import blogService from "./services/blogs";
 import loginService from "./services/login";
 import LoginForm from "./components/LoginForm";
+import Notification from "./components/Notification";
 
 const App = () => {
   const [blogs, setBlogs] = useState([]);
@@ -14,9 +15,8 @@ const App = () => {
     author: "",
     url: "",
   });
-  // const [title, setTitle] = useState("");
-  // const [author, setAuthor] = useState("");
-  // const [url, setUrl] = useState("");
+  const [message, setMessage] = useState("");
+  const [messageType, setMessageType] = useState("success");
 
   useEffect(() => {
     const loggedUserJSON = window.localStorage.getItem("loggedBlogAppUser");
@@ -40,11 +40,17 @@ const App = () => {
       setUser(user);
       setUsername("");
       setPassword("");
+      setMessage("Logged in successfully");
+      setMessageType("success");
+      setTimeout(() => {
+        setMessage(null);
+      }, 5000);
     } catch (error) {
-      // setErrorMessage("Wrong credentials");
-      // setTimeout(() => {
-      //   setErrorMessage(null);
-      // }, 5000);
+      setMessage("Wrong credentials");
+      setMessageType("error");
+      setTimeout(() => {
+        setMessage(null);
+      }, 5000);
     }
   };
 
@@ -56,6 +62,11 @@ const App = () => {
   const handleLogout = () => {
     setUser(null);
     window.localStorage.removeItem("loggedBlogAppUser");
+    setMessage("Logged out successfully");
+    setMessageType("success");
+    setTimeout(() => {
+      setMessage(null);
+    }, 5000);
   };
 
   const handleChange = (e) => {
@@ -63,7 +74,6 @@ const App = () => {
       ...newBlog,
       [e.target.name]: e.target.value,
     };
-    console.log(createdBlog);
 
     setNewBlog(createdBlog);
   };
@@ -71,9 +81,19 @@ const App = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
     if (!newBlog.title || !newBlog.author || !newBlog.url) {
+      setMessage("All fields must be completed");
+      setMessageType("warning");
+      setTimeout(() => {
+        setMessage(null);
+      }, 5000);
       return;
     }
     blogService.create(newBlog).then((returnedBlog) => {
+      setMessage(`A new blog ${newBlog.title} by ${newBlog.author} added!`);
+      setMessageType("success");
+      setTimeout(() => {
+        setMessage(null);
+      }, 5000);
       setBlogs(blogs.concat(returnedBlog));
       setNewBlog({
         title: "",
@@ -84,16 +104,22 @@ const App = () => {
   };
 
   return user === null ? (
-    <LoginForm
-      username={username}
-      setUsername={setUsername}
-      password={password}
-      setPassword={setPassword}
-      handleLogin={handleLogin}
-    />
+    <>
+      <Notification message={message} type={messageType} />
+
+      <LoginForm
+        username={username}
+        setUsername={setUsername}
+        password={password}
+        setPassword={setPassword}
+        handleLogin={handleLogin}
+      />
+    </>
   ) : (
     <div>
       <h2>Blogs</h2>
+      <Notification message={message} type={messageType} />
+
       <p>
         {user.name} logged in <button onClick={handleLogout}>logout</button>
       </p>
