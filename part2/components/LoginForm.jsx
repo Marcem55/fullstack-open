@@ -1,14 +1,14 @@
 /* eslint-disable react/prop-types */
 
 const LoginForm = ({
-  handleLogin,
+  handleSubmit,
   username,
   setUsername,
   password,
   setPassword,
 }) => {
   return (
-    <form onSubmit={handleLogin}>
+    <form onSubmit={handleSubmit}>
       <div>
         username
         <input
