@@ -1,12 +1,22 @@
 /* eslint-disable react/prop-types */
 
-const LoginForm = ({
-  handleLogin,
-  username,
-  setUsername,
-  password,
-  setPassword,
-}) => {
+import { useState } from "react";
+
+const LoginForm = ({ login }) => {
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
+
+  const handleLogin = async (event) => {
+    event.preventDefault();
+    login({
+      username,
+      password,
+    });
+
+    setUsername("");
+    setPassword("");
+  };
+
   return (
     <form onSubmit={handleLogin}>
       <h2>Login to application</h2>

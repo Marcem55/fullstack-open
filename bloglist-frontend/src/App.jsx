@@ -9,8 +9,6 @@ import BlogForm from "./components/BlogForm";
 
 const App = () => {
   const [blogs, setBlogs] = useState([]);
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
   const [user, setUser] = useState(null);
   const [message, setMessage] = useState("");
   const [messageType, setMessageType] = useState("success");
@@ -26,19 +24,13 @@ const App = () => {
     }
   }, []);
 
-  const handleLogin = async (event) => {
-    event.preventDefault();
+  const handleLogin = async (credentials) => {
     try {
-      const user = await loginService.login({
-        username,
-        password,
-      });
+      const user = await loginService.login(credentials);
 
       window.localStorage.setItem("loggedBlogAppUser", JSON.stringify(user));
       blogService.setToken(user.token);
       setUser(user);
-      setUsername("");
-      setPassword("");
       setMessage("Logged in successfully");
       setMessageType("success");
       setTimeout(() => {
@@ -107,13 +99,7 @@ const App = () => {
     <>
       <Notification message={message} type={messageType} />
 
-      <LoginForm
-        username={username}
-        setUsername={setUsername}
-        password={password}
-        setPassword={setPassword}
-        handleLogin={handleLogin}
-      />
+      <LoginForm login={handleLogin} />
     </>
   ) : (
     <div>
