@@ -24,11 +24,17 @@ const App = () => {
     }
   }, []);
 
+  const sortByLikes = (blogsList) => {
+    const orderedByLikes = blogsList.sort((a, b) => b.likes - a.likes);
+
+    setBlogs(orderedByLikes);
+  };
+
   useEffect(() => {
     if (!user) return;
     blogService
       .getAll()
-      .then((blogs) => setBlogs(blogs))
+      .then((blogs) => sortByLikes(blogs))
       .catch((error) => {
         if (error.message.includes("401")) {
           setUser(null);
@@ -91,7 +97,7 @@ const App = () => {
       setTimeout(() => {
         setMessage(null);
       }, 3000);
-      setBlogs(blogs.concat(returnedBlog));
+      sortByLikes(blogs.concat(returnedBlog));
     });
   };
 
@@ -105,7 +111,7 @@ const App = () => {
           return blog;
         }
       });
-      setBlogs(newBlogs);
+      sortByLikes(newBlogs);
     } catch (error) {
       setMessage("Cannot add like, please try again later");
       setMessageType("error");
