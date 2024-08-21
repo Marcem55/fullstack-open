@@ -9,8 +9,12 @@ const containerStyles = {
   margin: "6px",
 };
 
-const Blog = ({ blog }) => {
+const Blog = ({ blog, addLike }) => {
   const [showDetails, setShowDetails] = useState();
+
+  const handleLike = () => {
+    addLike(blog);
+  };
 
   return (
     <div
@@ -25,7 +29,7 @@ const Blog = ({ blog }) => {
         <div>
           <p>{blog.url}</p>
           <p>
-            Likes: {blog.likes} <button>like</button>
+            Likes: {blog.likes} <button onClick={handleLike}>like</button>
           </p>
           <p>{blog.author}</p>
         </div>

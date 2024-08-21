@@ -24,6 +24,24 @@ const App = () => {
     }
   }, []);
 
+  useEffect(() => {
+    if (!user) return;
+    blogService
+      .getAll()
+      .then((blogs) => setBlogs(blogs))
+      .catch((error) => {
+        if (error.message.includes("401")) {
+          setUser(null);
+          window.localStorage.removeItem("loggedBlogAppUser");
+          setMessage("Your session has expired, please login again");
+          setMessageType("warning");
+          setTimeout(() => {
+            setMessage(null);
+          }, 3000);
+        }
+      });
+  }, [user]);
+
   const handleLogin = async (credentials) => {
     try {
       const user = await loginService.login(credentials);
@@ -44,24 +62,6 @@ const App = () => {
       }, 3000);
     }
   };
-
-  useEffect(() => {
-    if (!user) return;
-    blogService
-      .getAll()
-      .then((blogs) => setBlogs(blogs))
-      .catch((error) => {
-        if (error.message.includes("401")) {
-          setUser(null);
-          window.localStorage.removeItem("loggedBlogAppUser");
-          setMessage("Your session has expired, please login again");
-          setMessageType("warning");
-          setTimeout(() => {
-            setMessage(null);
-          }, 3000);
-        }
-      });
-  }, [user]);
 
   const handleLogout = () => {
     setUser(null);
@@ -95,6 +95,26 @@ const App = () => {
     });
   };
 
+  const addLike = async (blog) => {
+    try {
+      const updatedBlog = await blogService.addLike(blog);
+      const newBlogs = blogs.map((blog) => {
+        if (blog.id === updatedBlog.id) {
+          return updatedBlog;
+        } else {
+          return blog;
+        }
+      });
+      setBlogs(newBlogs);
+    } catch (error) {
+      setMessage("Cannot add like, please try again later");
+      setMessageType("error");
+      setTimeout(() => {
+        setMessage(null);
+      }, 3000);
+    }
+  };
+
   return user === null ? (
     <>
       <Notification message={message} type={messageType} />
@@ -116,7 +136,7 @@ const App = () => {
         </Togglable>
       </div>
       {blogs.map((blog) => (
-        <Blog key={blog.id} blog={blog} />
+        <Blog key={blog.id} blog={blog} addLike={addLike} />
       ))}
     </div>
   );
