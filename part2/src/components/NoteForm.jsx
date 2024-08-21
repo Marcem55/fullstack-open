@@ -1,25 +1,25 @@
-import { useState } from "react";
+import { useState } from 'react'
 
-/* eslint-disable react/prop-types */
+
 const NoteForm = ({ createNote }) => {
-  const [newNote, setNewNote] = useState("a new note...");
+  const [newNote, setNewNote] = useState('a new note...')
 
   const addNote = (event) => {
-    event.preventDefault();
+    event.preventDefault()
     createNote({
       content: newNote,
       important: true,
-    });
+    })
 
-    setNewNote("");
-  };
+    setNewNote('')
+  }
 
   return (
     <form onSubmit={addNote}>
       <input value={newNote} onChange={(e) => setNewNote(e.target.value)} />
       <button type="submit">save</button>
     </form>
-  );
-};
+  )
+}
 
-export default NoteForm;
+export default NoteForm

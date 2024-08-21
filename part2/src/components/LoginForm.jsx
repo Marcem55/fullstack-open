@@ -1,20 +1,19 @@
-/* eslint-disable react/prop-types */
-
-import { useState } from "react";
+import { useState } from 'react'
+import PropTypes from 'prop-types'
 
 const LoginForm = ({ login }) => {
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
+  const [username, setUsername] = useState('')
+  const [password, setPassword] = useState('')
 
   const handleSubmit = async (event) => {
-    event.preventDefault();
+    event.preventDefault()
     login({
       username,
       password,
-    });
-    setUsername("");
-    setPassword("");
-  };
+    })
+    setUsername('')
+    setPassword('')
+  }
 
   return (
     <form onSubmit={handleSubmit}>
@@ -38,7 +37,11 @@ const LoginForm = ({ login }) => {
       </div>
       <button type="submit">login</button>
     </form>
-  );
-};
+  )
+}
 
-export default LoginForm;
+LoginForm.propTypes = {
+  login: PropTypes.func.isRequired,
+}
+
+export default LoginForm

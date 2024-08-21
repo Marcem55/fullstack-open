@@ -6,8 +6,8 @@ const Person = ({ person, handleDelete }) => {
       </p>
       <button onClick={(id) => handleDelete(person.id)}>delete</button>
     </div>
-  );
-};
+  )
+}
 
 const Persons = ({ persons, handleDelete }) => {
   return (
@@ -20,7 +20,7 @@ const Persons = ({ persons, handleDelete }) => {
         ))
       )}
     </div>
-  );
-};
+  )
+}
 
-export default Persons;
+export default Persons
