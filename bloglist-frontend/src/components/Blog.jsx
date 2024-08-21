@@ -9,11 +9,15 @@ const containerStyles = {
   margin: "6px",
 };
 
-const Blog = ({ blog, addLike }) => {
+const Blog = ({ blog, addLike, deleteBlog, allowDelete }) => {
   const [showDetails, setShowDetails] = useState();
 
   const handleLike = () => {
     addLike(blog);
+  };
+
+  const handleDelete = () => {
+    deleteBlog(blog);
   };
 
   return (
@@ -32,6 +36,7 @@ const Blog = ({ blog, addLike }) => {
             Likes: {blog.likes} <button onClick={handleLike}>like</button>
           </p>
           <p>{blog.author}</p>
+          {allowDelete && <button onClick={handleDelete}>remove</button>}
         </div>
       )}
       <button onClick={() => setShowDetails(!showDetails)}>

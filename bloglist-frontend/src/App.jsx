@@ -91,13 +91,13 @@ const App = () => {
     blogFormRef.current.toggleVisibility();
     blogService.create(blogObject).then((returnedBlog) => {
       setMessage(
-        `A new blog ${blogObject.title} by ${blogObject.author} added!`
+        `A new blog ${returnedBlog.title} by ${returnedBlog.author} added!`
       );
       setMessageType("success");
       setTimeout(() => {
         setMessage(null);
       }, 3000);
-      sortByLikes(blogs.concat(returnedBlog));
+      blogService.getAll().then((blogs) => sortByLikes(blogs));
     });
   };
 
@@ -113,7 +113,38 @@ const App = () => {
       });
       sortByLikes(newBlogs);
     } catch (error) {
+      window.scrollTo(0, 0);
       setMessage("Cannot add like, please try again later");
+      setMessageType("error");
+      setTimeout(() => {
+        setMessage(null);
+      }, 3000);
+    }
+  };
+
+  const deleteBlog = async (blogObject) => {
+    try {
+      const confirm = window.confirm(
+        `Remove blog ${blogObject.title} by ${blogObject.author}?`
+      );
+      if (confirm) {
+        await blogService.deleteBlog(blogObject.id);
+        setMessage(`${blogObject.title} by ${blogObject.author} removed`);
+        setMessageType("success");
+        setTimeout(() => {
+          setMessage(null);
+        }, 3000);
+        const newBlogs = blogs.filter((blog) => blog.id !== blogObject.id);
+        sortByLikes(newBlogs);
+      }
+    } catch (error) {
+      window.scrollTo(0, 0);
+      if (error.response.data.message.includes("permissions")) {
+        setMessage("You don't have permissions to delete this blog");
+      } else {
+        setMessage("Cannot remove, please try again later");
+      }
+
       setMessageType("error");
       setTimeout(() => {
         setMessage(null);
@@ -142,7 +173,13 @@ const App = () => {
         </Togglable>
       </div>
       {blogs.map((blog) => (
-        <Blog key={blog.id} blog={blog} addLike={addLike} />
+        <Blog
+          key={blog.id}
+          blog={blog}
+          addLike={addLike}
+          deleteBlog={deleteBlog}
+          allowDelete={blog.user.username === user.username}
+        />
       ))}
     </div>
   );
