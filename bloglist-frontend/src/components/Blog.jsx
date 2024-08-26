@@ -27,15 +27,17 @@ const Blog = ({ blog, addLike, deleteBlog, allowDelete }) => {
           ? { border: '1px solid black', padding: '2px', margin: '6px' }
           : containerStyles
       }
+      data-testid="blog-div-test"
     >
-      <p>{blog.title}</p>
+      <p data-testid="blog-title-author">
+        {blog.title} BY {blog.author}
+      </p>
       {showDetails && (
-        <div>
+        <div data-testid="hide-section">
           <p>{blog.url}</p>
           <p>
             Likes: {blog.likes} <button onClick={handleLike}>like</button>
           </p>
-          <p>{blog.author}</p>
           {allowDelete && <button onClick={handleDelete}>remove</button>}
         </div>
       )}
