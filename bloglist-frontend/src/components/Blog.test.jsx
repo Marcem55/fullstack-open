@@ -16,20 +16,21 @@ test('should render content', () => {
   expect(screen.queryByTestId('hide-section')).not.toBeInTheDocument()
 })
 
-// test('clicking the button calls event handler twice', async () => {
-//   const note = {
-//     content: 'Component testing is done with react-testing-library',
-//     important: true,
-//   }
+test('clicking the button show/hide elements', async () => {
+  const blog = {
+    title: 'How to test components in React?',
+    author: 'Marcelo Malacalza',
+    url: 'https://someurl-for-blog.com',
+    likes: 3,
+  }
 
-//   const mockHandler = vi.fn()
+  render(<Blog blog={blog} />)
 
-//   render(<Blog note={note} toggleImportance={mockHandler} />)
+  const user = userEvent.setup()
+  const button = screen.getByText('view')
+  await user.click(button)
 
-//   const user = userEvent.setup()
-//   const button = screen.getByText('make not important')
-//   await user.click(button)
-//   await user.click(button)
-
-//   expect(mockHandler.mock.calls).toHaveLength(2)
-// })
+  expect(screen.queryByTestId('hide-section')).toBeInTheDocument()
+  await user.click(button)
+  expect(screen.queryByTestId('hide-section')).not.toBeInTheDocument()
+})
